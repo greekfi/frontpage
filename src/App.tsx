@@ -26,12 +26,12 @@ function App() {
         </div>
       </div>
       <div className=" items-start  left-0 top-0 px-10 py-10">
-          <p className="text-9xl font-medium font-sans text-white ">
+          <p className="text-[clamp(2rem,8vw,9rem)] font-medium font-sans text-white">
             The only crypto options protocol on chain
           </p>
         </div>
         <div className="bg-blue-500  px-20 py-10">
-        <span className="text-5xl font-medium font-sans text-black">
+        <span className="text-[clamp(2rem,5vw,5rem)] font-medium font-sans text-black">
           Start trading options on chain now
         </span>
         <button className="bg-black text-white px-4 mx-10 py-2 rounded-md">
@@ -40,7 +40,7 @@ function App() {
       </div>
 
       <div className="flex-row bg-blue-300 px-20  py-10">
-        <span className="text-5xl font-medium font-sans text-black w-1/2">
+        <span className="text-[clamp(2rem,5vw,5rem)] font-medium font-sans text-black w-1/2">
           Mint options on chain now
         </span>
         <button className="bg-black text-white px-4 mx-10 py-2 rounded-md">
@@ -49,7 +49,7 @@ function App() {
       </div>
 
       <div className=" bg-blue-100 px-20  py-10">
-        <span className="text-5xl font-medium font-sans text-black w-1/2">
+        <span className="text-[clamp(2rem,5vw,5rem)] font-medium font-sans text-black w-1/2">
           Use options Vaults on chain now
         </span>
         <button className="bg-black text-white px-4 mx-10 py-2 rounded-md">
