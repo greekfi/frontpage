@@ -59,7 +59,7 @@ function App() {
       <section className="py-16 px-6 border-y border-gray-800">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-4xl font-bold text-white mb-12 text-center">
-            Collateral based options
+            Why Choose Greek.fi?
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -160,51 +160,6 @@ function App() {
           <button className="bg-black text-white px-6 py-3 rounded-lg hover:bg-gray-900">
             View Vaults →
           </button>
-        </div>
-      </section>
-
-      {/* Features Section */}
-      <section className="py-20 px-6 bg-gradient-to-b from-black to-gray-900">
-        <div className="max-w-7xl mx-auto">
-          <h2 className="text-4xl font-bold text-white mb-12 text-center">Why Choose Greek.fi?</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-            <div className="space-y-12">
-              <div>
-                <h3 className="text-2xl font-bold text-white mb-4">
-                  🔒 Fully Collateralized
-                </h3>
-                <p className="text-gray-400">
-                  All options are backed by real assets. No liquidation risk, no oracle dependencies.
-                </p>
-              </div>
-              <div>
-                <h3 className="text-2xl font-bold text-white mb-4">
-                  💎 Zero Slippage Trading
-                </h3>
-                <p className="text-gray-400">
-                  Trade options with zero slippage using our RFQ system and professional market makers.
-                </p>
-              </div>
-            </div>
-            <div className="space-y-12">
-              <div>
-                <h3 className="text-2xl font-bold text-white mb-4">
-                  🏦 Composable
-                </h3>
-                <p className="text-gray-400">
-                  Use your option tokens as collateral in other DeFi protocols.
-                </p>
-              </div>
-              <div>
-                <h3 className="text-2xl font-bold text-white mb-4">
-                  🚀 Multi-Chain
-                </h3>
-                <p className="text-gray-400">
-                  Available on multiple EVM chains including Ethereum, Arbitrum, and more.
-                </p>
-              </div>
-            </div>
-          </div>
         </div>
       </section>
 
