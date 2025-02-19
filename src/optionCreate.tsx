@@ -1,0 +1,241 @@
+import { useState } from 'react';
+import { useAccount, useWriteContract } from 'wagmi';
+// import { Select, Input, Switch, DatePicker, Button, Space, Form, Card } from 'antd';
+import { Address } from 'viem';
+import tokenList from './tokenList.json';
+import moment from 'moment-timezone';
+import TokenBalance from './optionTokenBalance';
+
+import Factory from './abi/OptionFactory_metadata.json';
+const abi = Factory.output.abi;
+
+// const abi = [
+//   {
+//     inputs: [
+//       { internalType: 'string', name: 'name', type: 'string' },
+//       { internalType: 'string', name: 'symbol', type: 'string' },
+//       { internalType: 'address', name: 'collateralAddress', type: 'address' },
+//       { internalType: 'address', name: 'considerationAddress', type: 'address' },
+//       { internalType: 'uint256', name: 'expirationDate', type: 'uint256' },
+//       { internalType: 'uint256', name: 'strike', type: 'uint256' },
+//       { internalType: 'bool', name: 'isPut', type: 'bool' }
+//     ],
+//     name: 'createOption',
+//     outputs: [],
+//     stateMutability: 'nonpayable',
+//     type: 'function'
+//   }
+// ]
+
+interface Token {
+  address: string;
+  symbol: string;
+  decimals: number;
+}
+
+const OptionCreator = (
+  {baseContractAddress}: 
+  {baseContractAddress: Address}
+) => {
+  const {isConnected, address: userAddress} = useAccount();  
+
+  // State management
+  const [collateralTokenSymbol, setCollateralToken] = useState<Token>();
+  const [considerationTokenSymbol, setConsiderationToken] = useState<Token>();
+  const [strikePrice, setStrikePrice] = useState<number >(0);
+  const [isPut, setIsPut] = useState(false);
+  const [expirationDate, setExpirationDate] = useState<Date>();
+  
+  const {writeContract } = useWriteContract()
+  // Contract interaction setup
+  const collMap = tokenList.collateral.reduce((acc, token) => {
+    acc[token.symbol] = token;
+    return acc;
+  }, {} as Record<string, Token>);
+
+  const consMap = tokenList.consideration.reduce((acc, token) => {
+    acc[token.symbol] = token;
+    return acc;
+  }, {} as Record<string, Token>);
+
+  const collateral = collateralTokenSymbol ? collMap[collateralTokenSymbol.symbol] : null;
+  const consideration = considerationTokenSymbol ? consMap[considerationTokenSymbol.symbol] : null;
+
+  // The strike price is actually represented as an integer with 18 decimals like erc20 tokens. 
+  const calculateStrikeRatio = () => {
+    if (!strikePrice || !consideration || !collateral) return {strikeInteger: BigInt(0)};
+    return {strikeInteger: BigInt(strikePrice * Math.pow(10, 18 + consideration.decimals - collateral.decimals)),};
+  };
+
+  // const {strikeNum, strikeDen} = calculateStrikeRatio();
+  const handleCreateOption = async () => {
+    if (!collateral || !consideration || !strikePrice || !expirationDate) {
+      alert('Please fill in all fields');
+      return;
+    }
+
+    const { strikeInteger } = calculateStrikeRatio();
+    const expTimestamp = Math.floor(new Date(expirationDate).getTime() / 1000);
+    const date = new Date(expirationDate);
+    const fmtDate = moment(date).format('YYYYMMDD');;
+    // fix time to gmt
+    
+    // Generate option name and symbol
+    const longName = `LOPT${isPut ? 'P' : 'C'}-${collateral.symbol}-${consideration.symbol}-${fmtDate}-${strikePrice}`;
+    const longSymbol = `LOPT${isPut ? 'P' : 'C'}-${collateral.symbol}-${consideration.symbol}-${fmtDate}-${strikePrice}`;
+    const shortName = `SOPT${isPut ? 'P' : 'C'}-${collateral.symbol}-${consideration.symbol}-${fmtDate}-${strikePrice}`;
+    const shortSymbol = `SOPT${isPut ? 'P' : 'C'}-${collateral.symbol}-${consideration.symbol}-${fmtDate}-${strikePrice}`;
+
+    try {
+      console.log(longName, longSymbol, collateral.address, consideration.address, BigInt(expTimestamp), strikeInteger, isPut);
+      writeContract({
+        address: baseContractAddress,
+        abi,
+        functionName: 'createOption',
+        args: [
+          longName,
+          shortName,
+          longSymbol,
+          shortSymbol,
+          collateral.address as Address,
+          consideration.address as Address,
+          BigInt(expTimestamp),
+          strikeInteger,
+          isPut
+        ],
+      });
+    } catch (error) {
+      console.error('Error creating option:', error);
+      alert('Failed to create option. Check console for details.');
+    }
+  };
+
+
+  moment.tz.setDefault("Europe/London");
+  return (
+    <div className="max-w-2xl mx-auto bg-black/80 border border-gray-800 rounded-lg shadow-lg p-6">
+      <form className="flex flex-col space-y-6">
+        <div className="flex flex-col space-y-6 w-full">
+
+          <div>
+            <TokenBalance
+              userAddress={userAddress as `0x${string}`}
+              tokenAddress={collateralTokenSymbol?.address as `0x${string}`}
+              label="Your Collateral Balance"
+              decimals={collateralTokenSymbol?.decimals as number}
+              watch={true}
+            />
+          </div>
+
+          {/* Token Selection */}
+          <div className="flex space-x-4 w-full">
+            <div className="flex-1">
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Collateral Token
+              </label>
+              <select
+                className="w-full rounded-lg border border-gray-800 bg-black/60 text-blue-300 p-2"
+                onChange={(e) => setCollateralToken(tokenList.collateral.find(t => t.symbol === e.target.value))}
+              >
+                <option value="">Select token</option>
+                {tokenList.collateral.map(token => (
+                  <option key={token.symbol} value={token.symbol}>
+                    {token.symbol}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="flex-1">
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Strike Price
+              </label>
+              <input
+                type="number"
+                className="w-full rounded-lg border border-gray-800 bg-black/60 text-blue-300 p-2"
+                value={strikePrice}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setStrikePrice(Number(e.target.value))}
+                placeholder="Enter strike price"
+              />
+            </div>
+
+            <div className="flex-1">
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Consideration Token
+              </label>
+              <select
+                className="w-full rounded-lg border border-gray-800 bg-black/60 text-blue-300 p-2"
+                onChange={(e) => setConsiderationToken(tokenList.consideration.find(t => t.symbol === e.target.value))}
+              >
+                <option value="">Select token</option>
+                {tokenList.consideration.map(token => (
+                  <option key={token.symbol} value={token.symbol}>
+                    {token.symbol}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          <div className="flex space-x-4 w-full items-end">
+            {/* Option Type Switch */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Option Type
+              </label>
+              <div className="relative inline-block w-20 h-8">
+                <input
+                  type="checkbox"
+                  className="sr-only"
+                  checked={isPut}
+                  onChange={(e) => setIsPut(e.target.checked)}
+                />
+                <div
+                  className={`block w-full h-8 rounded-full ${
+                    isPut ? 'bg-blue-600' : 'bg-gray-400'
+                  } cursor-pointer`}
+                />
+                <div
+                  className={`absolute top-1 left-1 bg-white w-6 h-6 rounded-full transition-transform duration-200 ease-in-out ${
+                    isPut ? 'transform translate-x-12' : ''
+                  }`}
+                />
+                <span className="absolute text-xs text-white left-2 top-2">
+                  {isPut ? 'PUT' : 'CALL'}
+                </span>
+              </div>
+            </div>
+
+            {/* Date Picker */}
+            <div className="flex-1">
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Expiration Date
+              </label>
+              <input
+                type="date"
+                className="w-full rounded-lg border border-gray-800 bg-black/60 text-blue-300 p-2"
+                onChange={(e) => setExpirationDate(new Date(e.target.value))}
+              />
+            </div>
+
+            {/* Create Button */}
+            <button
+              className={`px-4 py-2 rounded-lg text-black transition-transform hover:scale-105 ${
+                !isConnected || !collateral || !consideration || !strikePrice || !expirationDate
+                  ? 'bg-blue-300 cursor-not-allowed'
+                  : 'bg-blue-500 hover:bg-blue-600'
+              }`}
+              onClick={handleCreateOption}
+              disabled={!isConnected || !collateral || !consideration || !strikePrice || !expirationDate}
+            >
+              Create Option
+            </button>
+          </div>
+
+        </div>
+      </form>
+    </div>
+  );
+};
+
+export default OptionCreator;
