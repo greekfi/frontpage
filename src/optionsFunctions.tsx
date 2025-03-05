@@ -41,7 +41,7 @@ function OptionsFunctions() {
           <nav className="flex justify-between w-full">
             <ul className="flex items-center space-x-6">
               <li>
-                <img src={logo} alt="Greek.fi" className="w-10 h-10" />
+                <img src={logo} alt="Greek.fi" className="w-24 h-24" />
               </li>
               <li>
                 <a href="/" className="hover:text-blue-500">About GreekFi</a>
@@ -55,9 +55,6 @@ function OptionsFunctions() {
             </ul>
           </nav>
 
-          <div className="flex items-center justify-between">
-            <img src={logo} alt="Greek.fi" className="w-24 h-24" />
-          </div>
 
           <WagmiProvider config={config}>
             <QueryClientProvider client={queryClient}>
