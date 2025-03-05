@@ -1,5 +1,4 @@
 import Helmet from './assets/helmet-white.svg'
-import { availableChains } from './config'
 
 export default function Main() {
   return (

@@ -24,7 +24,7 @@ const MintInterface = (
   // Determine which token to use based on option type
   const [tokenToApprove, setTokenToApprove] = useState<Address>(collateralAddress);
   const [tokenDecimals, setTokenDecimals] = useState<number>(collateralDecimals);
-  const [tokenLabel, setTokenLabel] = useState<string>("Collateral");
+  const [, setTokenLabel] = useState<string>("Collateral");
 
   // Check if the option is a PUT
   const { data: optionIsPut } = useReadContract({

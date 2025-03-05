@@ -29,7 +29,7 @@ const ExerciseInterface = ({
   // Determine which token to use based on option type
   const [tokenToApprove, setTokenToApprove] = useState<`0x${string}`>(considerationAddress);
   const [tokenDecimals, setTokenDecimals] = useState<number>(considerationDecimals);
-  const [tokenLabel, setTokenLabel] = useState<string>("Consideration");
+  const [, setTokenLabel] = useState<string>("Consideration");
 
   // Check if the option is a PUT
   const { data: optionIsPut } = useReadContract({

@@ -1,31 +1,11 @@
 import { useState } from 'react';
 import { useAccount, useWriteContract } from 'wagmi';
-// import { Select, Input, Switch, DatePicker, Button, Space, Form, Card } from 'antd';
 import { Address } from 'viem';
 import tokenList from './tokenList.json';
 import moment from 'moment-timezone';
-import TokenBalance from './optionTokenBalance';
 
 import Factory from './abi/OptionFactory_metadata.json';
 const abi = Factory.output.abi;
-
-// const abi = [
-//   {
-//     inputs: [
-//       { internalType: 'string', name: 'name', type: 'string' },
-//       { internalType: 'string', name: 'symbol', type: 'string' },
-//       { internalType: 'address', name: 'collateralAddress', type: 'address' },
-//       { internalType: 'address', name: 'considerationAddress', type: 'address' },
-//       { internalType: 'uint256', name: 'expirationDate', type: 'uint256' },
-//       { internalType: 'uint256', name: 'strike', type: 'uint256' },
-//       { internalType: 'bool', name: 'isPut', type: 'bool' }
-//     ],
-//     name: 'createOption',
-//     outputs: [],
-//     stateMutability: 'nonpayable',
-//     type: 'function'
-//   }
-// ]
 
 interface Token {
   address: string;
@@ -37,7 +17,7 @@ const OptionCreator = (
   {baseContractAddress}: 
   {baseContractAddress: Address}
 ) => {
-  const {isConnected, address: userAddress} = useAccount();  
+  const {isConnected,} = useAccount();  
 
   // State management
   const [collateralTokenSymbol, setCollateralToken] = useState<Token>();
