@@ -49,10 +49,12 @@ export default function Main() {
                 className="bg-blue-500 text-black px-8 py-4 rounded-lg font-medium hover:scale-105 transition-transform">
               Start Trading Soon
             </button>
-            <button
-                className="border border-blue-500 text-blue-500 px-8 py-4 rounded-lg font-medium hover:bg-blue-500/10 transition-all">
-              Read Docs
-            </button>
+            <a href="https://github.com/greekfi/whitepaper" target="_blank" rel="noopener noreferrer">
+              <button
+                  className="border border-blue-500 text-blue-500 px-8 py-4 rounded-lg font-medium hover:bg-blue-500/10 transition-all">
+                Read the Whitepaper
+              </button>
+            </a>
           </div>
         </div>
       </section>
