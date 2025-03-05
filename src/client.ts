@@ -1,7 +1,13 @@
 import { createPublicClient, http } from 'viem'
-import { sepolia } from 'viem/chains'
- 
-export const publicClient = createPublicClient({
-  chain: sepolia,
-  transport: http()
-})
+import { useChainStore } from './config'
+
+export const getPublicClient = () => {
+  const { currentChain } = useChainStore.getState()
+  
+  return createPublicClient({
+    chain: currentChain,
+    transport: http()
+  })
+}
+
+export const publicClient = getPublicClient()

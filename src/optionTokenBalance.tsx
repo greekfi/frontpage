@@ -43,9 +43,12 @@ const TokenBalance = ({
   
     return (
       <div className="flex flex-col">
-        <div className="text-sm text-gray-600">{`${label} (${name})`}</div>
+        <div className="flex flex-col text-sm text-gray-600">
+          <div>{label}</div>
+          <div>{name as string}</div>
+        </div>
         <div className="text-2xl font-semibold">
-          {Number(formatUnits(balance as bigint, Number(decimals))).toFixed(6)}
+          {Number(formatUnits(balance as bigint, decimals)).toFixed(Number(formatUnits(balance as bigint, decimals)) % 1 === 0 ? 0 : 3)}
         </div>
       </div>
     );

@@ -117,15 +117,6 @@ const OptionCreator = (
       <form className="flex flex-col space-y-6">
         <div className="flex flex-col space-y-6 w-full">
 
-          <div>
-            <TokenBalance
-              userAddress={userAddress as `0x${string}`}
-              tokenAddress={collateralTokenSymbol?.address as `0x${string}`}
-              label="Your Collateral Balance"
-              decimals={collateralTokenSymbol?.decimals as number}
-              watch={true}
-            />
-          </div>
 
           {/* Token Selection */}
           <div className="flex space-x-4 w-full">
@@ -176,34 +167,43 @@ const OptionCreator = (
               </select>
             </div>
           </div>
+          <div className="mt-4 p-3 bg-blue-900/20 rounded-lg border border-blue-800/30">
+            <p className="text-sm text-blue-200">
+              {isPut 
+                ? `This PUT option allows you to sell 1 ${collateral?.symbol || '[collateral]'} for ${strikePrice} ${consideration?.symbol || '[consideration]'}s before expiry.`
+                : `This CALL option allows you to buy 1 ${collateral?.symbol || '[collateral]'} for ${strikePrice} ${consideration?.symbol || '[consideration]'}s before expiry.`
+              }
+            </p>
+          </div>
 
           <div className="flex space-x-4 w-full items-end">
             {/* Option Type Switch */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-300 mb-1">
                 Option Type
               </label>
-              <div className="relative inline-block w-20 h-8">
-                <input
-                  type="checkbox"
-                  className="sr-only"
-                  checked={isPut}
-                  onChange={(e) => setIsPut(e.target.checked)}
-                />
-                <div
-                  className={`block w-full h-8 rounded-full ${
-                    isPut ? 'bg-blue-600' : 'bg-gray-400'
-                  } cursor-pointer`}
-                />
-                <div
-                  className={`absolute top-1 left-1 bg-white w-6 h-6 rounded-full transition-transform duration-200 ease-in-out ${
-                    isPut ? 'transform translate-x-12' : ''
+              <button
+                type="button"
+                onClick={() => setIsPut(!isPut)}
+                className={`relative inline-flex items-center w-24 h-8 rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                  isPut ? 'bg-blue-600' : 'bg-blue-400'
+                }`}
+              >
+                {/* Toggle Circle */}
+                <span 
+                  className={`absolute left-1 bg-white w-6 h-6 rounded-full transition-transform duration-200 ease-in-out transform ${
+                    isPut ? 'translate-x-16' : 'translate-x-0'
                   }`}
                 />
-                <span className="absolute text-xs text-white left-2 top-2">
-                  {isPut ? 'PUT' : 'CALL'}
+                
+                {/* Labels */}
+                <span className="absolute left-2 text-xs font-bold text-white" style={{ opacity: isPut ? 0 : 1 }}>
+                  CALL
                 </span>
-              </div>
+                <span className="absolute right-2 text-xs font-bold text-white" style={{ opacity: isPut ? 1 : 0 }}>
+                  PUT
+                </span>
+              </button>
             </div>
 
             {/* Date Picker */}

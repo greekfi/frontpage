@@ -1,18 +1,10 @@
-import { useState } from 'react';
-import { useAccount, useWriteContract } from 'wagmi';
-// import { InputNumber, Button, Card, Space, message } from 'antd';
+import { useState, useEffect } from 'react';
+import { useWriteContract, useReadContract } from 'wagmi';
 import { parseUnits } from 'viem';
-// import { useWriteContracts } from 'wagmi/experimental';
-
-// Import ABIs and addresses
-import LongOptionABI from './abi/LongOption_metadata.json';
 import erc20abi from './erc20.abi.json';
-import TokenBalance from './optionTokenBalance';
+import LongOptionABI from './abi/LongOption_metadata.json';
 
 const longAbi = LongOptionABI.output.abi;
-
-const addressA = "0xca81e41A3eDF50Ed0DF26B89DD7696eE61f4631a";
-console.log(addressA);
 
 const ExerciseInterface = ({
   optionAddress,
@@ -32,15 +24,41 @@ const ExerciseInterface = ({
   isExpired: boolean;
 }) => {
   const [amount, setAmount] = useState(0);
-  const { address: userAddress } = useAccount();
+  const [isPut, setIsPut] = useState(false);
+  
+  // Determine which token to use based on option type
+  const [tokenToApprove, setTokenToApprove] = useState<`0x${string}`>(considerationAddress);
+  const [tokenDecimals, setTokenDecimals] = useState<number>(considerationDecimals);
+  const [tokenLabel, setTokenLabel] = useState<string>("Consideration");
 
-  // Check allowance
-  // const { data: allowance = 0n } = useReadContract({
-  //   address: considerationAddress as `0x${string}`,
-  //   abi: erc20abi,
-  //   functionName: 'allowance',
-  //   args: [userAddress, optionAddress],
-  // });
+  // Check if the option is a PUT
+  const { data: optionIsPut } = useReadContract({
+    address: optionAddress,
+    abi: longAbi,
+    functionName: 'isPut',
+    query: {
+      enabled: !!optionAddress,
+    },
+  });
+
+  // Update state when option type is determined
+  useEffect(() => {
+    if (optionIsPut !== undefined) {
+      setIsPut(Boolean(optionIsPut));
+      
+      if (optionIsPut) {
+        // For PUT options, we use collateral tokens
+        setTokenToApprove(collateralAddress);
+        setTokenDecimals(collateralDecimals);
+        setTokenLabel("Collateral");
+      } else {
+        // For CALL options, we use consideration tokens
+        setTokenToApprove(considerationAddress);
+        setTokenDecimals(considerationDecimals);
+        setTokenLabel("Consideration");
+      }
+    }
+  }, [optionIsPut, collateralAddress, considerationAddress, collateralDecimals, considerationDecimals]);
 
   const { writeContract, error, isPending } = useWriteContract();
 
@@ -50,61 +68,66 @@ const ExerciseInterface = ({
         address: optionAddress,
         abi: longAbi,
         functionName: 'exercise',
-        args: [parseUnits(amount.toString(), Number(considerationDecimals))],
+        args: [parseUnits(amount.toString(), Number(tokenDecimals))],
       };
       
       writeContract(exerciseConfig);
-
   };
 
   const approveTransfers = async () => {
-      
-      // First approve if needed
-        const approveConsideration = {
-          address: considerationAddress as `0x${string}`,
-          abi: erc20abi,
-          functionName: 'approve',
-          args: [shortAddress, parseUnits(amount.toString(), Number(considerationDecimals))],
-      };
-      writeContract(approveConsideration);
-      const approveCollateral = {
-        address: collateralAddress as `0x${string}`,
+      // Approve the token needed for exercise based on option type
+      const approveToken = {
+        address: tokenToApprove,
         abi: erc20abi,
         functionName: 'approve',
-        args: [shortAddress, parseUnits(amount.toString(), Number(collateralDecimals))],
-    };
-    writeContract(approveCollateral);
+        args: [shortAddress, parseUnits(amount.toString(), Number(tokenDecimals))],
+      };
+      writeContract(approveToken);
       
-      // Then exercise
       console.log(error);
-      // message.success('Options exercised successfully!');
-
   };
 
   return (
-    <div className="p-6 bg-black/80 border border-gray-800 rounded-lg shadow-lg">
-      <h2 className="text-xl font-light text-blue-300 mb-4">Exercise Options</h2>
+    <div className="p-6 bg-black/80 border border-gray-800 rounded-lg shadow-lg max-w-sm">
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-xl font-light text-blue-300">
+          <div className="flex items-center gap-2">
+            Exercise {isPut ? "PUT" : "CALL"} Options
+            <button
+              type="button"
+              className="text-sm text-blue-200 hover:text-blue-300 flex items-center gap-1"
+              title={isPut 
+                ? "This is a PUT option, so you'll need collateral tokens to exercise."
+                : "This is a CALL option, so you'll need consideration tokens to exercise."
+              }
+              onClick={(e) => {
+                const tooltip = document.createElement('div');
+                tooltip.className = 'absolute bg-gray-900 text-sm text-gray-200 p-2 rounded shadow-lg -mt-8 -ml-2';
+                tooltip.textContent = isPut 
+                  ? "This is a PUT option, so you'll need collateral tokens to exercise."
+                  : "This is a CALL option, so you'll need consideration tokens to exercise.";
+                
+                const button = e.currentTarget;
+                button.appendChild(tooltip);
+                
+                setTimeout(() => {
+                  tooltip.remove();
+                }, 2000);
+              }}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
+                <path strokeLinecap="round" strokeLinejoin="round" d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z" />
+              </svg>
+            </button>
+          </div>
+        </h2>
+      </div>
+      
       <div className="flex flex-col gap-4 w-full">
-        <div className="flex justify-between w-full">
-          <TokenBalance
-            userAddress={userAddress as `0x${string}`}
-            tokenAddress={optionAddress}
-            label="Your Option Balance"
-            decimals={collateralDecimals as number}
-            watch={true}
-          />
-          <TokenBalance
-            userAddress={userAddress as `0x${string}`}
-            tokenAddress={considerationAddress as `0x${string}`}
-            label="Your Consideration Balance"
-            decimals={considerationDecimals as number}
-            watch={true}
-          />
-        </div>
-
+        
         <input
           type="number"
-          className="w-full p-2 rounded-lg border border-gray-800 bg-black/60 text-blue-300"
+          className="w-1/2 p-2 rounded-lg border border-gray-800 bg-black/60 text-blue-300"
           placeholder="Amount to exercise"
           value={amount}
           onChange={(e) => setAmount(Number(e.target.value) || 0)}
@@ -118,24 +141,13 @@ const ExerciseInterface = ({
                 ? 'bg-blue-300 cursor-not-allowed'
                 : 'bg-blue-500 hover:bg-blue-600'
             }`}
-            onClick={approveTransfers}
+            onClick={async () => {
+              await approveTransfers();
+              handleExercise();
+            }}
             disabled={!amount || isExpired || isPending}
           >
-            {isPending ? 'Approving...' : 'Approve Transfers'}
-          </button>
-        </div>
-        
-        <div>
-          <button
-            className={`px-4 py-2 rounded-lg text-black transition-transform hover:scale-105 ${
-              !amount || isExpired || isPending
-                ? 'bg-blue-300 cursor-not-allowed'
-                : 'bg-blue-500 hover:bg-blue-600'
-            }`}
-            onClick={handleExercise}
-            disabled={!amount || isExpired || isPending}
-          >
-            {isPending ? 'Exercising...' : 'Exercise Options'}
+            {isPending ? 'Processing...' : 'Exercise Options'}
           </button>
         </div>
         

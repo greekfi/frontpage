@@ -10,8 +10,8 @@ import TokenBalance from './optionTokenBalance';
 const abi = OptionFactoryABI.output.abi;
 
 const SelectOptionAddress = (
-  {baseContractAddress, setOptionAddress, optionAddress, collateralAddress, collateralDecimals}: 
-  {baseContractAddress: Address, setOptionAddress: (address: Address) => void, optionAddress: Address, collateralAddress: Address, collateralDecimals: number}
+  {baseContractAddress, setOptionAddress, optionAddress, collateralAddress, collateralDecimals, considerationAddress, considerationDecimals, shortOptionAddress, shortOptionDecimals}: 
+  {baseContractAddress: Address, setOptionAddress: (address: Address) => void, optionAddress: Address, collateralAddress: Address, collateralDecimals: number, considerationAddress: Address, considerationDecimals: number, shortOptionAddress: Address, shortOptionDecimals: number }
 ) => {
 
     const handleOptionChange = (optionAddress: string) => {
@@ -70,16 +70,31 @@ const SelectOptionAddress = (
         <div className="flex justify-between w-full">
           <TokenBalance
             userAddress={userAddress as `0x${string}`}
+            tokenAddress={shortOptionAddress as `0x${string}`}
+            label="Short Option Balance"
+            decimals={shortOptionDecimals as number}
+            watch={true}
+          />
+          <TokenBalance
+            userAddress={userAddress as `0x${string}`}
             tokenAddress={optionAddress as `0x${string}`}
-            label="Your Option Balance"
+            label="Option Balance"
+            decimals={collateralDecimals as number}
+            watch={true}
+          />
+
+          <TokenBalance
+            userAddress={userAddress as `0x${string}`}
+            tokenAddress={collateralAddress as `0x${string}`}
+            label="Collateral Balance"
             decimals={collateralDecimals as number}
             watch={true}
           />
           <TokenBalance
             userAddress={userAddress as `0x${string}`}
-            tokenAddress={collateralAddress as `0x${string}`}
-            label="Your Collateral Balance"
-            decimals={collateralDecimals as number}
+            tokenAddress={considerationAddress as `0x${string}`}
+            label="Consideration Balance"
+            decimals={considerationDecimals as number}
             watch={true}
           />
         </div>

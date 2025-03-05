@@ -1,4 +1,5 @@
 import Helmet from './assets/helmet-white.svg'
+import { availableChains } from './config'
 
 export default function Main() {
   return (
@@ -8,10 +9,10 @@ export default function Main() {
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <img src={Helmet} alt="Greek.fi Logo" className="h-12 w-12"/>
+              <img src={Helmet} alt="Greek.fi Logo" className="h-24 w-24"/>
               <h1 className="text-3xl font-light text-blue-300">Greek.fi</h1>
             </div>
-            <div className="flex gap-3">
+            <div className="flex items-center gap-3">
               <a href="/mint">
                 <button 
                     className="hover:scale-105 transition-transform bg-blue-300 text-black px-6 py-2 rounded-lg font-medium">
@@ -131,8 +132,32 @@ export default function Main() {
         </div>
       </section>
 
-      {/* Stats Section */}
+
+      {/* Supported Chains Section */}
       <section className="py-20 px-6 border-y border-gray-800 bg-black/50">
+        <div className="max-w-7xl mx-auto">
+          <h2 className="text-3xl font-bold text-center text-blue-300 mb-12">Supported Networks</h2>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-8">
+            {availableChains.map((chain) => (
+              <div key={chain.id} className="flex flex-col items-center p-6 rounded-xl bg-blue-500/10 border border-blue-300/20 hover:border-blue-300/40 transition-all">
+                <div className="h-16 w-16 rounded-full bg-blue-400/20 flex items-center justify-center mb-4">
+                  {chain.id === 8453 && <img src="/images/base.svg" alt="Base" className="w-8 h-8" />}
+                  {chain.id === 11155111 && <img src="/images/sepolia.svg" alt="Sepolia" className="w-8 h-8" />}
+                  {chain.id === 1 && <img src="/images/ethereum.svg" alt="Ethereum" className="w-8 h-8" />}
+                  {chain.id === 42161 && <img src="/images/arbitrum.svg" alt="Arbitrum" className="w-8 h-8" />}
+                  {chain.id === 10 && <img src="/images/optimism.svg" alt="Optimism" className="w-8 h-8" />}
+                  {chain.name.includes("Polygon") && <img src="/images/polygon.svg" alt="Polygon" className="w-8 h-8" />}
+                  {chain.id === 98865 && <img src="/images/plume.svg" alt="Plume" className="w-8 h-8" />}
+                </div>
+                <h3 className="text-xl font-semibold text-blue-200 text-center">{chain.name}</h3>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Stats Section */}
+      {/* <section className="py-20 px-6 border-y border-gray-800 bg-black/50">
         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-12">
           <div className="text-center">
             <p className="text-5xl font-bold text-blue-400">$10M+</p>
@@ -147,7 +172,7 @@ export default function Main() {
             <p className="text-gray-400 mt-2">Options Minted</p>
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* Feature Blocks */}
       <section className="grid grid-cols-1 md:grid-cols-3 gap-1 py-20">
