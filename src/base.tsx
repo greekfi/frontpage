@@ -177,13 +177,6 @@ export default function Main() {
 
       {/* Feature Blocks */}
       <section className="grid grid-cols-1 md:grid-cols-3 gap-1 py-20">
-        <div className="bg-blue-500 p-12 hover:scale-[1.02] transition-transform">
-          <h3 className="text-4xl font-bold text-black mb-4">Trade Options</h3>
-          <p className="text-black/80 mb-6">Buy and sell options with zero slippage using RFQ systems</p>
-          <button className="bg-black text-white px-6 py-3 rounded-lg hover:bg-gray-900">
-            Trade Now →
-          </button>
-        </div>
         <div className="bg-blue-400 p-12 hover:scale-[1.02] transition-transform">
           <h3 className="text-4xl font-bold text-black mb-4">Mint Options</h3>
           <p className="text-black/80 mb-6">Create fully-collateralized options with any ERC20 token</p>
@@ -191,8 +184,15 @@ export default function Main() {
             Start Minting →
           </button>
         </div>
+        <div className="bg-blue-500 p-12 hover:scale-[1.02] transition-transform">
+          <h3 className="text-4xl font-bold text-black mb-4">Trade Soon</h3>
+          <p className="text-black/80 mb-6">Buy and sell options with zero slippage using RFQ systems</p>
+          <button className="bg-black text-white px-6 py-3 rounded-lg hover:bg-gray-900">
+            Trade Now →
+          </button>
+        </div>
         <div className="bg-blue-300 p-12 hover:scale-[1.02] transition-transform">
-          <h3 className="text-4xl font-bold text-black mb-4">Option Vaults</h3>
+          <h3 className="text-4xl font-bold text-black mb-4">Option Vaults Soon</h3>
           <p className="text-black/80 mb-6">Automate your covered call strategies</p>
           <button className="bg-black text-white px-6 py-3 rounded-lg hover:bg-gray-900">
             View Vaults →
