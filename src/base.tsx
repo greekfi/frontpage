@@ -134,7 +134,7 @@ export default function Main() {
 
 
       {/* Supported Chains Section */}
-      <section className="py-20 px-6 border-y border-gray-800 bg-black/50">
+      {/* <section className="py-20 px-6 border-y border-gray-800 bg-black/50">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-3xl font-bold text-center text-blue-300 mb-12">Supported Networks</h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-8">
@@ -154,7 +154,7 @@ export default function Main() {
             ))}
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* Stats Section */}
       {/* <section className="py-20 px-6 border-y border-gray-800 bg-black/50">
@@ -200,18 +200,18 @@ export default function Main() {
       </section>
 
       {/* Integration Partners */}
-      <section className="py-20 px-6 border-t border-gray-800">
+      {/* <section className="py-20 px-6 border-t border-gray-800">
         <div className="max-w-7xl mx-auto">
           <h3 className="text-center text-gray-400 mb-12">Integrated with</h3>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 opacity-50">
             {/* Add partner logos here */}
-            <div className="h-12 bg-gray-800 rounded"></div>
+            {/* <div className="h-12 bg-gray-800 rounded"></div>
             <div className="h-12 bg-gray-800 rounded"></div>
             <div className="h-12 bg-gray-800 rounded"></div>
             <div className="h-12 bg-gray-800 rounded"></div>
           </div>
         </div>
-      </section>
+      </section> */} 
 
       {/* Footer */}
       <footer className="border-t border-gray-800 py-12 px-6">
