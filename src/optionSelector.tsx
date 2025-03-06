@@ -55,7 +55,7 @@ const SelectOptionAddress = (
       <div className="flex flex-col gap-4 w-full">
         <div className="flex justify-center w-full">
           <select
-            className="w-[400px] p-2 text-center rounded-lg border border-gray-800 bg-black/60 text-blue-300"
+            className=" p-2 text-center rounded-lg border border-gray-800 bg-black/60 text-blue-300 w-64"
             onChange={(e) => handleOptionChange(e.target.value)}
           >
             <option value="">Select an option</option>
@@ -67,37 +67,6 @@ const SelectOptionAddress = (
           </select>
         </div>
 
-        <div className="flex justify-between w-full">
-          <TokenBalance
-            userAddress={userAddress as `0x${string}`}
-            tokenAddress={shortOptionAddress as `0x${string}`}
-            label="Short Option Balance"
-            decimals={shortOptionDecimals as number}
-            watch={true}
-          />
-          <TokenBalance
-            userAddress={userAddress as `0x${string}`}
-            tokenAddress={optionAddress as `0x${string}`}
-            label="Option Balance"
-            decimals={collateralDecimals as number}
-            watch={true}
-          />
-
-          <TokenBalance
-            userAddress={userAddress as `0x${string}`}
-            tokenAddress={collateralAddress as `0x${string}`}
-            label="Collateral Balance"
-            decimals={collateralDecimals as number}
-            watch={true}
-          />
-          <TokenBalance
-            userAddress={userAddress as `0x${string}`}
-            tokenAddress={considerationAddress as `0x${string}`}
-            label="Consideration Balance"
-            decimals={considerationDecimals as number}
-            watch={true}
-          />
-        </div>
       </div>
     </div>
   );

@@ -1,50 +1,52 @@
 import { useState } from 'react';
 import { useWriteContract } from 'wagmi';
 import { parseUnits } from 'viem';
-import LongOptionABI from './abi/LongOption_metadata.json';
-import erc20abi from './erc20.abi.json';
-import TokenBalance from './components/TokenBalance';
+import TokenBalance from './TokenBalance';
+import erc20abi from '../erc20.abi.json';
 
-const longAbi = LongOptionABI.output.abi;
-
-interface RedeemInterfaceProps {
-  optionAddress: `0x${string}`;
-  shortAddress: `0x${string}`;
-  collateralAddress: `0x${string}`;
-  collateralDecimals: number;
+interface OptionInterfaceProps {
+  title: string;
+  description: string;
+  tokenAddress: `0x${string}`;
+  tokenDecimals: number;
+  tokenLabel: string;
+  contractAddress: `0x${string}`;
+  contractAbi: any;
+  functionName: string;
   isExpired: boolean;
+  onApprove?: () => Promise<void>;
+  showApproveButton?: boolean;
 }
 
-const RedeemPair = ({
-  optionAddress: longOption,
-  shortAddress,
-  collateralAddress,
-  collateralDecimals,
+const OptionInterface = ({
+  title,
+  description,
+  tokenAddress,
+  tokenDecimals,
+  tokenLabel,
+  contractAddress,
+  contractAbi,
+  functionName,
   isExpired,
-}: RedeemInterfaceProps) => {
+  onApprove,
+  showApproveButton = false,
+}: OptionInterfaceProps) => {
   const [amount, setAmount] = useState<number>(0);
   const { writeContract, isPending } = useWriteContract();
 
-  const handleApprove = async () => {
-    const approveCollateral = {
-      address: collateralAddress as `0x${string}`,
-      abi: erc20abi,
-      functionName: 'approve',
-      args: [shortAddress, parseUnits('0', Number(collateralDecimals))],
-    };
-    writeContract(approveCollateral);
-  };
+  const handleAction = async () => {
+    if (showApproveButton && onApprove) {
+      await onApprove();
+    }
 
-  const handleRedeem = async () => {
-    await handleApprove();
-    
-    const redeemConfig = {
-      address: longOption,
-      abi: longAbi,
-      functionName: 'redeem',
-      args: [parseUnits(amount.toString(), Number(collateralDecimals))],
+    const actionConfig = {
+      address: contractAddress,
+      abi: contractAbi,
+      functionName,
+      args: [parseUnits(amount.toString(), Number(tokenDecimals))],
     };
-    writeContract(redeemConfig);
+
+    writeContract(actionConfig);
   };
 
   return (
@@ -52,15 +54,15 @@ const RedeemPair = ({
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-xl font-light text-blue-300">
           <div className="flex items-center gap-2">
-            Redeem Options
+            {title}
             <button
               type="button"
               className="text-sm text-blue-200 hover:text-blue-300 flex items-center gap-1"
-              title="Redeem your options after expiry"
+              title={description}
               onClick={(e) => {
                 const tooltip = document.createElement('div');
                 tooltip.className = 'absolute bg-gray-900 text-sm text-gray-200 p-2 rounded shadow-lg -mt-8 -ml-2';
-                tooltip.textContent = "Redeem your options after expiry";
+                tooltip.textContent = description;
                 
                 const button = e.currentTarget;
                 button.appendChild(tooltip);
@@ -78,24 +80,17 @@ const RedeemPair = ({
         </h2>
       </div>
 
-      <div className="space-y-2 mb-4">
-        <TokenBalance 
-          tokenAddress={longOption}
-          decimals={collateralDecimals}
-          label="Long Option Balance"
-        />
-        <TokenBalance 
-          tokenAddress={shortAddress}
-          decimals={collateralDecimals}
-          label="Short Option Balance"
-        />
-      </div>
+      <TokenBalance 
+        tokenAddress={tokenAddress}
+        decimals={tokenDecimals}
+        label={tokenLabel}
+      />
 
       <div className="flex flex-col gap-4 w-full">
         <input
           type="number"
           className="w-1/2 p-2 rounded-lg border border-gray-800 bg-black/60 text-blue-300"
-          placeholder="Amount to redeem"
+          placeholder={`Amount to ${title.toLowerCase()}`}
           value={amount || ''}
           onChange={(e) => {
             const val = e.target.value;
@@ -116,11 +111,11 @@ const RedeemPair = ({
                 ? 'bg-blue-300 cursor-not-allowed'
                 : 'bg-blue-500 hover:bg-blue-600'
             }`}
-            onClick={handleRedeem}
+            onClick={handleAction}
             disabled={!amount || isPending || isExpired}
             title={isExpired ? "Option is expired" : ""}
           >
-            {isPending ? 'Processing...' : 'Redeem Options'}
+            {isPending ? 'Processing...' : title}
           </button>
         </div>
       </div>
@@ -128,4 +123,4 @@ const RedeemPair = ({
   );
 };
 
-export default RedeemPair;
+export default OptionInterface; 
