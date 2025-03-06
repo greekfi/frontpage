@@ -27,19 +27,15 @@ const OptionCreator = (
   const [expirationDate, setExpirationDate] = useState<Date>();
   
   const {writeContract } = useWriteContract()
-  // Contract interaction setup
-  const collMap = tokenList.collateral.reduce((acc, token) => {
+
+  // Create a map of all tokens for easy lookup
+  const allTokensMap = tokenList.reduce((acc, token) => {
     acc[token.symbol] = token;
     return acc;
   }, {} as Record<string, Token>);
 
-  const consMap = tokenList.consideration.reduce((acc, token) => {
-    acc[token.symbol] = token;
-    return acc;
-  }, {} as Record<string, Token>);
-
-  const collateral = collateralTokenSymbol ? collMap[collateralTokenSymbol.symbol] : null;
-  const consideration = considerationTokenSymbol ? consMap[considerationTokenSymbol.symbol] : null;
+  const collateral = collateralTokenSymbol ? allTokensMap[collateralTokenSymbol.symbol] : null;
+  const consideration = considerationTokenSymbol ? allTokensMap[considerationTokenSymbol.symbol] : null;
 
   // The strike price is actually represented as an integer with 18 decimals like erc20 tokens. 
   const calculateStrikeRatio = () => {
@@ -47,7 +43,6 @@ const OptionCreator = (
     return {strikeInteger: BigInt(strikePrice * Math.pow(10, 18 + consideration.decimals - collateral.decimals)),};
   };
 
-  // const {strikeNum, strikeDen} = calculateStrikeRatio();
   const handleCreateOption = async () => {
     if (!collateral || !consideration || !strikePrice || !expirationDate) {
       alert('Please fill in all fields');
@@ -61,10 +56,12 @@ const OptionCreator = (
     // fix time to gmt
     
     // Generate option name and symbol
-    const longName = `LOPT${isPut ? 'P' : 'C'}-${collateral.symbol}-${consideration.symbol}-${fmtDate}-${strikePrice}`;
-    const longSymbol = `LOPT${isPut ? 'P' : 'C'}-${collateral.symbol}-${consideration.symbol}-${fmtDate}-${strikePrice}`;
-    const shortName = `SOPT${isPut ? 'P' : 'C'}-${collateral.symbol}-${consideration.symbol}-${fmtDate}-${strikePrice}`;
-    const shortSymbol = `SOPT${isPut ? 'P' : 'C'}-${collateral.symbol}-${consideration.symbol}-${fmtDate}-${strikePrice}`;
+    const optionType = isPut ? 'P' : 'C';
+    const baseNameSymbol = `OPT${optionType}-${collateral.symbol}-${consideration.symbol}-${fmtDate}-${strikePrice}`;
+    const longName = `L${baseNameSymbol}`;
+    const longSymbol = longName;
+    const shortName = `S${baseNameSymbol}`;
+    const shortSymbol = shortName;
 
     try {
       console.log(longName, longSymbol, collateral.address, consideration.address, BigInt(expTimestamp), strikeInteger, isPut);
@@ -90,14 +87,11 @@ const OptionCreator = (
     }
   };
 
-
   moment.tz.setDefault("Europe/London");
   return (
     <div className="max-w-2xl mx-auto bg-black/80 border border-gray-800 rounded-lg shadow-lg p-6">
       <form className="flex flex-col space-y-6">
         <div className="flex flex-col space-y-6 w-full">
-
-
           {/* Token Selection */}
           <div className="flex space-x-4 w-full">
             <div className="flex-1">
@@ -106,12 +100,12 @@ const OptionCreator = (
               </label>
               <select
                 className="w-full rounded-lg border border-gray-800 bg-black/60 text-blue-300 p-2"
-                onChange={(e) => setCollateralToken(tokenList.collateral.find(t => t.symbol === e.target.value))}
+                onChange={(e) => setCollateralToken(allTokensMap[e.target.value])}
               >
                 <option value="">Select token</option>
-                {tokenList.collateral.map(token => (
-                  <option key={token.symbol} value={token.symbol}>
-                    {token.symbol}
+                {Object.keys(allTokensMap).map(symbol => (
+                  <option key={symbol} value={symbol}>
+                    {symbol}
                   </option>
                 ))}
               </select>
@@ -136,12 +130,12 @@ const OptionCreator = (
               </label>
               <select
                 className="w-full rounded-lg border border-gray-800 bg-black/60 text-blue-300 p-2"
-                onChange={(e) => setConsiderationToken(tokenList.consideration.find(t => t.symbol === e.target.value))}
+                onChange={(e) => setConsiderationToken(allTokensMap[e.target.value])}
               >
                 <option value="">Select token</option>
-                {tokenList.consideration.map(token => (
-                  <option key={token.symbol} value={token.symbol}>
-                    {token.symbol}
+                {Object.keys(allTokensMap).map(symbol => (
+                  <option key={symbol} value={symbol}>
+                    {symbol}
                   </option>
                 ))}
               </select>
@@ -150,8 +144,8 @@ const OptionCreator = (
           <div className="mt-4 p-3 bg-blue-900/20 rounded-lg border border-blue-800/30">
             <p className="text-sm text-blue-200">
               {isPut 
-                ? `This PUT option allows you to sell 1 ${collateral?.symbol || '[collateral]'} for ${strikePrice} ${consideration?.symbol || '[consideration]'}s before expiry.`
-                : `This CALL option allows you to buy 1 ${collateral?.symbol || '[collateral]'} for ${strikePrice} ${consideration?.symbol || '[consideration]'}s before expiry.`
+                ? `This PUT option allows the holder to sell 1 ${consideration?.symbol || '[consideration]'} for ${strikePrice} ${collateral?.symbol || '[collateral]'}s before expiry.`
+                : `This CALL option allows the holder to buy 1 ${collateral?.symbol || '[collateral]'} for ${strikePrice} ${consideration?.symbol || '[consideration]'}s before expiry.`
               }
             </p>
           </div>

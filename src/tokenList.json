@@ -1,5 +1,4 @@
-{
-  "collateral": [
+ [
     {
       "address": "0xf1C9acDc66974dFB6dEcB12aA385b9cD01190E38",
       "symbol": "osETH",
@@ -34,10 +33,7 @@
       "address": "0xDfa556856B77dA71F70D56C9fD1Ef4Dd891FF131",
       "symbol": "WBTCt",
       "decimals": 18
-    }
-    
-  ],
-  "consideration": [
+    },
     {
       "address": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
       "symbol": "USDC",
@@ -58,5 +54,5 @@
       "symbol": "RLUSD",
       "decimals": 18
     }
+    
   ]
-}

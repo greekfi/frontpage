@@ -12,8 +12,8 @@ const longAbi = LongOptionABI.output.abi;
 
 
 const MintInterface = (
-  {optionAddress, shortAddress, collateralAddress, considerationAddress, collateralDecimals, considerationDecimals, isExpired}: 
-  {optionAddress: Address, shortAddress: Address, collateralAddress: Address, considerationAddress: Address, collateralDecimals: number, considerationDecimals: number, isExpired: boolean}) => {
+  {optionAddress, shortAddress, collateralAddress, collateralDecimals, isExpired}: 
+  {optionAddress: Address, shortAddress: Address, collateralAddress: Address, collateralDecimals: number, isExpired: boolean}) => {
 
   const { currentChain } = useChainStore();
   const [amount, setAmount] = useState(0);
@@ -21,12 +21,8 @@ const MintInterface = (
   const { writeContract, isPending } = useWriteContract();
   const [isPut, setIsPut] = useState(false);
   
-  // Determine which token to use based on option type
-  const [tokenToApprove, setTokenToApprove] = useState<Address>(collateralAddress);
-  const [tokenDecimals, setTokenDecimals] = useState<number>(collateralDecimals);
-  const [, setTokenLabel] = useState<string>("Collateral");
 
-  // Check if the option is a PUT
+  // Check if the option is a PUT and update state
   const { data: optionIsPut } = useReadContract({
     address: optionAddress as `0x${string}`,
     abi: longAbi,
@@ -36,35 +32,22 @@ const MintInterface = (
     },
   });
 
-  // Update state when option type is determined
   useEffect(() => {
     if (optionIsPut !== undefined) {
       setIsPut(!!optionIsPut);
-      
-      if (optionIsPut) {
-        // For PUT options, we use consideration tokens
-        setTokenToApprove(considerationAddress);
-        setTokenDecimals(considerationDecimals);
-        setTokenLabel("Consideration");
-      } else {
-        // For CALL options, we use collateral tokens
-        setTokenToApprove(collateralAddress);
-        setTokenDecimals(collateralDecimals);
-        setTokenLabel("Collateral");
-      }
     }
-  }, [optionIsPut, collateralAddress, considerationAddress, collateralDecimals, considerationDecimals]);
+  }, [optionIsPut]);
 
-  const amountToMint = parseUnits(amount.toString(), Number(tokenDecimals));
+  const amountToMint = parseUnits(amount.toString(), Number(collateralDecimals));
 
   // Check allowance
   const { data: allowance = 0n } = useReadContract({
-    address: tokenToApprove as `0x${string}`,
+    address: collateralAddress as `0x${string}`,
     abi: erc20abi,
     functionName: 'allowance',
     args: [userAddress as `0x${string}`, shortAddress as `0x${string}`],
     query: {
-      enabled: !!tokenToApprove && !!userAddress,
+      enabled: !!collateralAddress && !!userAddress,
     },
   });
   
@@ -76,11 +59,11 @@ const MintInterface = (
   console.log("amountToMint", amountToMint);
   console.log("current chain", currentChain.name);
   console.log("isPut", isPut);
-  console.log("tokenToApprove", tokenToApprove);
+  console.log("collateralToken", collateralAddress);
 
   const handleApprove = async () => {
       const approveToken = {
-        address: tokenToApprove as `0x${string}`,
+        address: collateralAddress as `0x${string}`,
         abi: erc20abi,
         functionName: 'approve',
         args: [shortAddress, amountToMint],
@@ -89,7 +72,6 @@ const MintInterface = (
   };
   
   const handleMint = async () => {
-      handleApprove();
       // Then mint
       const mintConfig = {
         address: optionAddress as `0x${string}`,
@@ -166,7 +148,10 @@ const MintInterface = (
                 : 'bg-blue-500 hover:bg-blue-600'
             }`}
             onClick={async () => {
-              await handleApprove();
+              // Only approve if not already approved
+              if (!isApproved) {
+                await handleApprove();
+              }
               handleMint();
             }}
             disabled={!amount || isPending || isExpired}
