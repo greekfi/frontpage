@@ -93,9 +93,7 @@ function OptionsFunctions() {
                       optionAddress={optionAddress} 
                       shortAddress={shortAddress} 
                       collateralAddress={collateralAddress} 
-                      considerationAddress={considerationAddress}
                       collateralDecimals={collateralDecimals} 
-                      considerationDecimals={considerationDecimals}
                       isExpired={isExpired} 
                     />
                     <ExerciseInterface 
