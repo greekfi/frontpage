@@ -3,14 +3,24 @@ import { sepolia, mainnet, arbitrum, optimism, base, baseSepolia, plume, plumeTe
 import { create } from 'zustand'
 import { Chain } from 'wagmi/chains'
 
-declare module 'wagmi' {
-  interface Register {
-    config: typeof config
-  }
-}
+// Define localhost chain
+export const localhost = {
+  id: 31337,
+  name: 'Localhost',
+  nativeCurrency: {
+    decimals: 18,
+    name: 'Ether',
+    symbol: 'ETH',
+  },
+  rpcUrls: {
+    default: { http: ['http://127.0.0.1:8545'] },
+    public: { http: ['http://127.0.0.1:8545'] },
+  },
+} as const satisfies Chain
 
 // Define available chains
 export const availableChains = [
+  localhost,
   sepolia,
   mainnet,
   arbitrum,
@@ -28,25 +38,16 @@ interface ChainState {
 }
 
 export const useChainStore = create<ChainState>((set) => ({
-  currentChain: sepolia,
+  currentChain: localhost,
   setCurrentChain: (chain) => set({ currentChain: chain }),
 }))
 
-// Create a function to get the current config based on the selected chain
-export const getConfig = () => {
-  const { currentChain } = useChainStore.getState()
-  
-  return createConfig({
-    chains: [currentChain],
-    transports: {
-      [currentChain.id]: http(
-        currentChain.id === sepolia.id 
-          ? "https://endpoints.omniatech.io/v1/eth/sepolia/public"
-          : undefined
-      ),
-    },
-  })
-}
-
-// Export the initial config
-export const config = getConfig()
+// Create the initial config
+export const config = createConfig({
+  chains: [localhost, sepolia, mainnet],
+  transports: {
+    [localhost.id]: http(),
+    [sepolia.id]: http(),
+    [mainnet.id]: http(),
+  },
+})

@@ -39,6 +39,10 @@ const ChainSelector = () => {
         return '🟪';  
       case 84532: //  Base Sepolia
         return '🟣';
+      case 1337: // Localhost
+        return '🏠';
+      case 31337: // Hardhat
+        return '🏠';
       default:
         return '⚡';
     }

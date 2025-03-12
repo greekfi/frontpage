@@ -59,7 +59,29 @@ const SelectOptionAddress = (
             <option value="">Select an option</option>
             {optionList.map((option) => (
               <option key={option.address} value={option.address || ''}>
-                {String(option.name || '')}
+                {(() => {
+                  const name = String(option.name || '');
+                  const parts = name.split('-');
+                  if (parts.length < 5) return name;
+                  
+                  const optionType = parts[0].endsWith('P') ? 'PUT' : 'CALL';
+                  const collateral = parts[1];
+                  const consideration = parts[2];
+                  const dateStr = parts[3];
+                  const strike = parseFloat(parts[4]);
+                  
+                  // Format date from YYYYMMDD to ISO
+                  const year = dateStr.substring(0, 4);
+                  const month = dateStr.substring(4, 6);
+                  const day = dateStr.substring(6, 8);
+                  const formattedDate = `${year}-${month}-${day}`;
+                  
+                  if (optionType === 'PUT') {
+                    return `${formattedDate} ${optionType}  : swap 1 ${consideration} for  ${strike} ${collateral} `;
+                  } else {
+                    return `${formattedDate} ${optionType}: swap ${strike} ${consideration} for 1 ${collateral} `;
+                  }
+                })()}
               </option>
             ))}
           </select>

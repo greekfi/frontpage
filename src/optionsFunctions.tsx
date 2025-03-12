@@ -1,6 +1,5 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { useAccount, WagmiProvider } from 'wagmi'
-import { config } from './config'
 import RedeemPair from './optionRedeemPair';
 import ExerciseInterface from './optionExercise';
 import MintInterface from './optionMint';
@@ -12,8 +11,8 @@ import ContractDetails from './optionDetails';
 import { useState } from 'react';
 import SelectOptionAddress from './optionSelector';
 import logo from './assets/helmet-white.svg';
-
-const CONTRACT_ADDRESS = '0xb55edadc4a09f380cd4229c4075b9f44e3405585'
+import { config } from './config';
+const CONTRACT_ADDRESS = '0x5fbdb2315678afecb367f032d93f642f64180aa3'
 const queryClient = new QueryClient()
 
 function ConnectWallet() {
@@ -24,7 +23,7 @@ function ConnectWallet() {
 
 function OptionsFunctions() {
   console.log("OptionsFunctions");
-  console.log(config);
+  // console.log(config);
 
   const [optionAddress, setOptionAddress] = useState<Address>("0x0");
   const [shortAddress, setShortAddress] = useState<Address>("0x0");
