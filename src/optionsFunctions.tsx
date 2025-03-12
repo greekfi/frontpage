@@ -47,7 +47,7 @@ function OptionsFunctions() {
                 <a href="/" className="hover:text-blue-500">About GreekFi</a>
               </li>
               <li>
-                <a href="https://github.com/greek-fi/whitepaper" className="hover:text-blue-500">Whitepaper</a>
+                <a href="https://github.com/greekfi/whitepaper" className="hover:text-blue-500">Whitepaper</a>
               </li>
               <li>
                 <a href="mailto:hello@greek.fi" className="hover:text-blue-500 text-blue-300">Contact</a>
@@ -77,14 +77,7 @@ function OptionsFunctions() {
                   <div className="p-4 bg-gray-800">
                     <SelectOptionAddress 
                       baseContractAddress={CONTRACT_ADDRESS} 
-                      optionAddress={optionAddress} 
-                      collateralAddress={collateralAddress} 
-                      collateralDecimals={collateralDecimals} 
-                      considerationAddress={considerationAddress} 
-                      considerationDecimals={considerationDecimals} 
                       setOptionAddress={setOptionAddress}
-                      shortOptionAddress={shortAddress}
-                      shortOptionDecimals={collateralDecimals}
                     />
                   </div>
                   

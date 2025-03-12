@@ -1,5 +1,5 @@
 import { useWriteContract } from 'wagmi';
-import { parseUnits } from 'viem';
+import { Abi, parseUnits } from 'viem';
 import LongOptionABI from './abi/LongOption_metadata.json';
 import erc20abi from './erc20.abi.json';
 import OptionInterface from './components/OptionInterface';
@@ -39,7 +39,7 @@ const MintInterface = ({
       tokenDecimals={collateralDecimals}
       tokenLabel="Collateral Balance"
       contractAddress={optionAddress}
-      contractAbi={longAbi}
+      contractAbi={longAbi as Abi}
       functionName="mint"
       isExpired={isExpired}
       onApprove={handleApprove}

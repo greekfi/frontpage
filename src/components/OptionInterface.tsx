@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { useWriteContract } from 'wagmi';
 import { parseUnits } from 'viem';
+import { Abi } from 'viem';
 import TokenBalance from './TokenBalance';
-import erc20abi from '../erc20.abi.json';
 
 interface OptionInterfaceProps {
   title: string;
@@ -11,7 +11,7 @@ interface OptionInterfaceProps {
   tokenDecimals: number;
   tokenLabel: string;
   contractAddress: `0x${string}`;
-  contractAbi: any;
+  contractAbi: Abi;
   functionName: string;
   isExpired: boolean;
   onApprove?: () => Promise<void>;

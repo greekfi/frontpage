@@ -39,12 +39,23 @@ const RedeemPair = ({
     await handleApprove();
     
     const redeemConfig = {
+      address: shortAddress,
+      abi: longAbi,
+      functionName: 'redeem',
+      args: [parseUnits(amount.toString(), Number(collateralDecimals))],
+    };
+
+    const redeemPairConfig = {
       address: longOption,
       abi: longAbi,
       functionName: 'redeem',
       args: [parseUnits(amount.toString(), Number(collateralDecimals))],
     };
-    writeContract(redeemConfig);
+    if (!isExpired) {
+      writeContract(redeemPairConfig);
+    } else {
+      writeContract(redeemConfig);
+    }
   };
 
   return (
@@ -112,12 +123,12 @@ const RedeemPair = ({
         <div className="flex gap-4">
           <button
             className={`px-4 py-2 rounded-lg text-black transition-transform hover:scale-105 ${
-              !amount || isPending || isExpired
+              !amount || isPending 
                 ? 'bg-blue-300 cursor-not-allowed'
                 : 'bg-blue-500 hover:bg-blue-600'
             }`}
             onClick={handleRedeem}
-            disabled={!amount || isPending || isExpired}
+            disabled={!amount || isPending }
             title={isExpired ? "Option is expired" : ""}
           >
             {isPending ? 'Processing...' : 'Redeem Options'}

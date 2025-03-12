@@ -1,24 +1,22 @@
-import { useAccount, useReadContract, useReadContracts } from 'wagmi';
+import { useReadContract, useReadContracts } from 'wagmi';
 // import { Select, Card, Space } from 'antd';
 import { Address, erc20Abi } from 'viem';
 
 
 // Import ABIs and addresses
 import OptionFactoryABI from './abi/OptionFactory_metadata.json';
-import TokenBalance from './optionTokenBalance';
 
 const abi = OptionFactoryABI.output.abi;
 
 const SelectOptionAddress = (
-  {baseContractAddress, setOptionAddress, optionAddress, collateralAddress, collateralDecimals, considerationAddress, considerationDecimals, shortOptionAddress, shortOptionDecimals}: 
-  {baseContractAddress: Address, setOptionAddress: (address: Address) => void, optionAddress: Address, collateralAddress: Address, collateralDecimals: number, considerationAddress: Address, considerationDecimals: number, shortOptionAddress: Address, shortOptionDecimals: number }
+  {baseContractAddress, setOptionAddress}: 
+  {baseContractAddress: Address, setOptionAddress: (address: Address) => void}
 ) => {
 
     const handleOptionChange = (optionAddress: string) => {
         setOptionAddress(optionAddress as Address);
     };
 
-    const { address: userAddress } = useAccount();
   const { data: createdOptions, error } = useReadContract({
     address: baseContractAddress, 
     abi,
