@@ -12,7 +12,7 @@ import { useState } from 'react';
 import SelectOptionAddress from './optionSelector';
 import logo from './assets/helmet-white.svg';
 import { config } from './config';
-const CONTRACT_ADDRESS = '0x5fbdb2315678afecb367f032d93f642f64180aa3'
+const CONTRACT_ADDRESS = '0xb55edadc4a09f380cd4229c4075b9f44e3405585'
 const queryClient = new QueryClient()
 
 function ConnectWallet() {

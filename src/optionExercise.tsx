@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useReadContract, useWriteContract } from 'wagmi';
-import { parseUnits } from 'viem';
+import { parseUnits, Abi } from 'viem';
 import erc20abi from './erc20.abi.json';
 import LongOptionABI from './abi/LongOption_metadata.json';
 import OptionInterface from './components/OptionInterface';
@@ -71,7 +71,7 @@ const ExerciseInterface = ({
       tokenDecimals={considerationDecimals}
       tokenLabel="Consideration Balance"
       contractAddress={optionAddress}
-      contractAbi={longAbi}
+      contractAbi={longAbi as Abi}
       functionName="exercise"
       isExpired={isExpired}
       onApprove={handleApprove}

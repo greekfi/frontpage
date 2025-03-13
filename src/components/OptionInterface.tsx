@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useWriteContract } from 'wagmi';
-import { parseUnits } from 'viem';
-import { Abi } from 'viem';
+import { parseUnits, Abi } from 'viem';
 import TokenBalance from './TokenBalance';
 
 interface OptionInterfaceProps {

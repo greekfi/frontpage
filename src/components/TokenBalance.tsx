@@ -22,14 +22,14 @@ const TokenBalance = ({ tokenAddress, decimals, label }: TokenBalanceProps) => {
     },
   });
 
-  const { data: symbol = '' } = useReadContract({
+  const { data: symbol } = useReadContract({
     address: tokenAddress,
     abi: erc20abi,
     functionName: 'symbol',
     query: {
       enabled: !!tokenAddress,
     },
-  });
+  }) as { data: string };
 
   const formattedBalance = formatUnits(balance as bigint, decimals);
 
