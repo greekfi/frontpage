@@ -36,7 +36,7 @@ export default function Main() {
         <div className="max-w-7xl mx-auto">
           <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-purple-500/10 blur-3xl"></div>
           <h2 className="text-[clamp(2.5rem,8vw,6rem)] font-bold text-white leading-tight">
-            The only crypto options protocol <br/>
+            The only options protocol <br/>
             <span
                 className="bg-gradient-to-r from-blue-400 to-blue-600 text-transparent bg-clip-text">built for defi</span>
           </h2>
