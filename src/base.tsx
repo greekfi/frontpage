@@ -34,7 +34,7 @@ export default function Main() {
       {/* Hero Section */}
       <section className="relative py-32 px-6">
         <div className="max-w-7xl mx-auto">
-          <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-purple-500/10 blur-3xl"></div>
+          {/* <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-purple-500/10 blur-3xl"></div> */}
           <h2 className="text-[clamp(2.5rem,8vw,6rem)] font-bold text-white leading-tight">
             The only options protocol <br/>
             <span
@@ -180,22 +180,24 @@ export default function Main() {
         <div className="bg-blue-400 p-12 hover:scale-[1.02] transition-transform">
           <h3 className="text-4xl font-bold text-black mb-4">Mint Options</h3>
           <p className="text-black/80 mb-6">Create fully-collateralized options with any ERC20 token</p>
-          <button className="bg-black text-white px-6 py-3 rounded-lg hover:bg-gray-900">
-            Start Minting →
-          </button>
+          <a href="/mint">
+            <button className="bg-black text-white px-6 py-3 rounded-lg hover:bg-gray-900">
+              Start Minting →
+            </button>
+          </a>
         </div>
         <div className="bg-blue-500 p-12 hover:scale-[1.02] transition-transform">
           <h3 className="text-4xl font-bold text-black mb-4">Trade Soon</h3>
           <p className="text-black/80 mb-6">Buy and sell options with zero slippage using RFQ systems</p>
           <button className="bg-black text-white px-6 py-3 rounded-lg hover:bg-gray-900">
-            Trade Now →
+            Trade Soon →
           </button>
         </div>
         <div className="bg-blue-300 p-12 hover:scale-[1.02] transition-transform">
           <h3 className="text-4xl font-bold text-black mb-4">Option Vaults Soon</h3>
           <p className="text-black/80 mb-6">Automate your covered call strategies</p>
           <button className="bg-black text-white px-6 py-3 rounded-lg hover:bg-gray-900">
-            View Vaults →
+            Vault Soon →
           </button>
         </div>
       </section>
@@ -236,22 +238,22 @@ export default function Main() {
             <div>
               <h4 className="text-white font-bold mb-4">Resources</h4>
               <ul className="space-y-2">
-                <li><a href="#" className="text-gray-400 hover:text-blue-300">Documentation</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-blue-300">GitHub</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-blue-300">Blog</a></li>
+                <li><a href="https://github.com/greekfi/whitepaper" className="text-gray-400 hover:text-blue-300">Whitepaper</a></li>
+                <li><a href="https://github.com/greekfi" className="text-gray-400 hover:text-blue-300">GitHub</a></li>
+                {/* <li><a href="https://docs.greek.fi" className="text-gray-400 hover:text-blue-300">Docs</a></li> */}
               </ul>
             </div>
             <div>
               <h4 className="text-white font-bold mb-4">Community</h4>
               <ul className="space-y-2">
-                <li><a href="#" className="text-gray-400 hover:text-blue-300">Discord</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-blue-300">Twitter</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-blue-300">Telegram</a></li>
+                <li><a href="https://discord.gg/3saJeJ6MeE" className="text-gray-400 hover:text-blue-300">Discord</a></li>
+                <li><a href="https://x.com/greekdotfi" className="text-gray-400 hover:text-blue-300">Twitter</a></li>
+                <li><a href="https://t.me/greekfi" className="text-gray-400 hover:text-blue-300">Telegram</a></li>
               </ul>
             </div>
           </div>
           <div className="border-t border-gray-800 pt-8 flex justify-between items-center">
-            <p className="text-gray-500">© Greek.fi, 2025</p>
+            <p className="text-gray-500">© Greek Fi LLC, 2025</p>
             <div className="flex gap-6">
               <a href="#" className="text-gray-400 hover:text-blue-300">Terms</a>
               <a href="#" className="text-gray-400 hover:text-blue-300">Privacy</a>
